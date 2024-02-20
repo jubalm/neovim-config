@@ -36,7 +36,7 @@ require('lazy').setup({
       'williamboman/mason-lspconfig.nvim',
       {
         'j-hui/fidget.nvim',
-        tag = 'legacy',
+        tag = 'v1.4.0',
         opts = {}
       },
       'folke/neodev.nvim',
@@ -97,9 +97,7 @@ require('lazy').setup({
   {
     'lukas-reineke/indent-blankline.nvim',
     main = "ibl",
-    opts = {
-      show_trailing_blankline_indent = false,
-    },
+    opts = {},
   },
 
   -- Commenting
@@ -108,16 +106,8 @@ require('lazy').setup({
   -- Fuzzy Finder
   {
     'nvim-telescope/telescope.nvim',
-    branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
-      {
-        'nvim-telescope/telescope-fzf-native.nvim',
-        build = 'make',
-        cond = function()
-          return vim.fn.executable 'make' == 1
-        end,
-      },
     },
   },
 
@@ -211,6 +201,7 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
+
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
@@ -224,23 +215,25 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
+-- See `:help telescope.builtin`
+local telescope_builtin = require('telescope.builtin')
+local telescope_actions = require('telescope.actions')
+local telescope_dropdown = require('telescope.themes').get_dropdown
+
 require('telescope').setup {
   defaults = {
     mappings = {
       i = {
         ['<C-u>'] = false,
         ['<C-d>'] = false,
+        --['<C-Q>'] = telescope_actions.send_to_qflist,
       },
     },
   },
 }
 
 -- Enable telescope fzf native, if installed
-pcall(require('telescope').load_extension, 'fzf')
-
--- See `:help telescope.builtin`
-local telescope_builtin = require('telescope.builtin')
-local telescope_dropdown = require('telescope.themes').get_dropdown
+-- pcall(require('telescope').load_extension, 'fzf')
 
 vim.keymap.set('n', '<leader>?', telescope_builtin.oldfiles, { desc = '[?] Find recently opened files' })
 vim.keymap.set('n', '<leader><space>', function()
@@ -268,6 +261,7 @@ vim.keymap.set('n', '<leader>sh', telescope_builtin.help_tags, { desc = '[S]earc
 vim.keymap.set('n', '<leader>sw', telescope_builtin.grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', telescope_builtin.live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', telescope_builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+vim.keymap.set('n', '<leader>sq', telescope_builtin.quickfix, { desc = '[S]earch [Q]uickfix' })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
@@ -410,6 +404,9 @@ local servers = {
     Lua = {
       workspace = { checkThirdParty = false },
       telemetry = { enable = false },
+      diagnostics = {
+        disable = { "missing-fields" }
+      }
     },
   },
 }
@@ -494,9 +491,8 @@ cmp.setup {
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 
--- close quickfix menu after selecting choice
-vim.api.nvim_create_autocmd(
-  "FileType", {
-    pattern = { "qf" },
-    command = [[nnoremap <buffer> <CR> <CR>:cclose<CR>]]
-  })
+----------------------------------
+-- Configure Indent Blank Lines --
+----------------------------------
+
+require("ibl").setup({ scope = { enabled = false } })
