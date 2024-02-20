@@ -226,8 +226,11 @@ require('telescope').setup {
       i = {
         ['<C-u>'] = false,
         ['<C-d>'] = false,
-        --['<C-Q>'] = telescope_actions.send_to_qflist,
+        ['<C-q>'] = telescope_actions.smart_send_to_qflist + telescope_actions.open_qflist
       },
+      n = {
+        ['<C-q>'] = telescope_actions.smart_send_to_qflist + telescope_actions.open_qflist
+      }
     },
   },
 }
