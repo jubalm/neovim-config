@@ -21,7 +21,6 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
---  Setup Package Manager
 require('lazy').setup({
   -- Auto-detect tab stop
   'tpope/vim-sleuth',
@@ -87,8 +86,16 @@ require('lazy').setup({
       options = {
         icons_enabled = false,
         theme = 'nord',
-        component_separators = '|',
+        component_separators = '',
         section_separators = '',
+        path = 3,
+      },
+
+      sections = {
+        lualine_a = { { 'mode', fmt = function(str) return str:sub(1, 1) end } },
+        lualine_b = { 'branch' },
+        lualine_c = { 'filename', 'diff', 'diagnostics' },
+        lualine_x = { 'encoding', 'filetype' },
       },
     },
   },
@@ -252,7 +259,6 @@ vim.keymap.set('n', '<leader>/', function()
     previewer = false,
   })
 end, { desc = '[/] Fuzzily search in current buffer' })
-
 vim.keymap.set('n', '<leader>gf', telescope_builtin.git_files, { desc = 'Search [G]it [F]iles' })
 vim.keymap.set('n', '<leader>p', function()
   telescope_builtin.find_files(telescope_dropdown {
@@ -262,7 +268,9 @@ vim.keymap.set('n', '<leader>p', function()
 end, { desc = 'Search Files' })
 vim.keymap.set('n', '<leader>sh', telescope_builtin.help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sw', telescope_builtin.grep_string, { desc = '[S]earch current [W]ord' })
-vim.keymap.set('n', '<leader>sg', telescope_builtin.live_grep, { desc = '[S]earch by [G]rep' })
+vim.keymap.set('n', '<leader>sg', function()
+  telescope_builtin.live_grep({ layout_strategy = 'vertical' })
+end, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', telescope_builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
 vim.keymap.set('n', '<leader>sq', telescope_builtin.quickfix, { desc = '[S]earch [Q]uickfix' })
 
