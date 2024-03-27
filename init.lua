@@ -29,9 +29,7 @@ require('lazy').setup({
   {
     'neovim/nvim-lspconfig',
     dependencies = {
-      {
-        'williamboman/mason.nvim', config = true
-      },
+      { 'williamboman/mason.nvim', config = true },
       'williamboman/mason-lspconfig.nvim',
       {
         'j-hui/fidget.nvim',
@@ -85,17 +83,15 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'nord',
         component_separators = '',
         section_separators = '',
-        path = 3,
       },
 
       sections = {
         lualine_a = { { 'mode', fmt = function(str) return str:sub(1, 1) end } },
         lualine_b = { 'branch' },
-        lualine_c = { 'filename', 'diff', 'diagnostics' },
-        lualine_x = { 'encoding', 'filetype' },
+        lualine_c = { { 'filename', path = 1 }, 'diff', 'diagnostics' },
+        lualine_x = { 'encoding' }
       },
     },
   },
@@ -121,9 +117,7 @@ require('lazy').setup({
   -- Extend code capabilities and highlight
   {
     'nvim-treesitter/nvim-treesitter',
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter-textobjects',
-    },
+    dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects' },
     build = ':TSUpdate',
   },
 
@@ -132,7 +126,7 @@ require('lazy').setup({
     'NvChad/nvim-colorizer.lua',
     config = function()
       vim.o.termguicolors = true
-      require 'colorizer'.setup({
+      require('colorizer').setup({
         user_default_options = {
           mode = "virtualtext",
         }
@@ -151,7 +145,15 @@ require('lazy').setup({
       vim.o.foldlevel = 99
       vim.o.foldlevelstart = 99
       vim.o.foldenable = true
-      require 'ufo'.setup()
+      require('ufo').setup()
+    end
+  },
+
+  -- Typescript Check
+  {
+    'dmmulroy/tsc.nvim',
+    config = function()
+      require('tsc').setup()
     end
   }
 }, {})
@@ -195,7 +197,7 @@ vim.o.timeoutlen = 300
 vim.o.completeopt = 'menuone,noselect'
 
 ------------------
--- Key Mappings --
+-- Global Key Mappings --
 ------------------
 
 -- Reset search
@@ -262,6 +264,7 @@ end, { desc = '[/] Fuzzily search in current buffer' })
 vim.keymap.set('n', '<leader>gf', telescope_builtin.git_files, { desc = 'Search [G]it [F]iles' })
 vim.keymap.set('n', '<leader>p', function()
   telescope_builtin.find_files(telescope_dropdown {
+    find_command = { 'rg', '--files', '--iglob', '!.git', '--hidden' },
     ignore_current_buffer = true,
     previewer = false,
   })
@@ -292,10 +295,10 @@ require('nvim-treesitter.configs').setup {
   incremental_selection = {
     enable = true,
     keymaps = {
-      init_selection = '<c-space>',
-      node_incremental = '<c-space>',
-      scope_incremental = '<c-s>',
-      node_decremental = '<M-space>',
+      init_selection = false,
+      node_incremental = 'v',
+      scope_incremental = false,
+      node_decremental = 'V',
     },
   },
   textobjects = {
@@ -434,7 +437,7 @@ capabilities.textDocument.foldingRange = {
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 -- Ensure the servers above are installed
-local mason_lspconfig = require 'mason-lspconfig'
+local mason_lspconfig = require('mason-lspconfig')
 
 mason_lspconfig.setup {
   ensure_installed = vim.tbl_keys(servers),
@@ -453,8 +456,8 @@ mason_lspconfig.setup_handlers {
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
-local cmp = require 'cmp'
-local luasnip = require 'luasnip'
+local cmp = require('cmp')
+local luasnip = require('luasnip')
 require('luasnip.loaders.from_vscode').lazy_load()
 luasnip.config.setup {}
 
