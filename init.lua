@@ -398,33 +398,6 @@ local on_attach = function(_, bufnr)
   end, { desc = 'Format current buffer with LSP' })
 end
 
--- Enable the following language servers
---  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
---
---  Add any additional override configuration in the following tables. They will be passed to
---  the `settings` field of the server config. You must look up that documentation yourself.
---
---  If you want to override the default filetypes that your language server will attach to you can
---  define the property 'filetypes' to the map in question.
-local servers = {
-  -- clangd = {},
-  -- gopls = {},
-  -- pyright = {},
-  -- rust_analyzer = {},
-  -- tsserver = {},
-  -- html = { filetypes = { 'html', 'twig', 'hbs'} },
-
-  lua_ls = {
-    Lua = {
-      workspace = { checkThirdParty = false },
-      telemetry = { enable = false },
-      diagnostics = {
-        disable = { "missing-fields" }
-      }
-    },
-  },
-}
-
 -- Setup neovim lua configuration
 require('neodev').setup()
 
@@ -434,24 +407,27 @@ capabilities.textDocument.foldingRange = {
   dynamicRegistration = false,
   lineFoldingOnly = true
 }
+
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
--- Ensure the servers above are installed
+local lspconfig = require('lspconfig')
 local mason_lspconfig = require('mason-lspconfig')
 
 mason_lspconfig.setup {
-  ensure_installed = vim.tbl_keys(servers),
-}
-
-mason_lspconfig.setup_handlers {
-  function(server_name)
-    require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
-    }
-  end
+  ensure_installed = {},
+  handlers = {
+    function(server_name)
+      lspconfig[server_name].setup {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        root_dir = function(fname)
+          return lspconfig.util.find_package_json_ancestor(fname)
+            or lspconfig.util.find_node_modules_ancestor(fname)
+            or lspconfig.util.find_git_ancestor(fname)
+        end,
+      }
+    end
+  }
 }
 
 -- [[ Configure nvim-cmp ]]
