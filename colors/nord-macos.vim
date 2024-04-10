@@ -12,28 +12,27 @@ if version > 580
   endif
 endif
 
-let g:colors_name = "nord"
+let g:colors_name = "nord-macos"
 let s:nord_vim_version="0.19.0"
 set background=dark
 
 let s:nord0_gui = "#191919"
-let s:nord1_gui = "#3B4252"
-let s:nord2_gui = "#434C5E"
+let s:nord1_gui = "#202021"
+let s:nord2_gui = "#25272D"
 let s:nord3_gui = "#4C566A"
 let s:nord3_gui_bright = "#616E88"
-" let s:nord4_gui = "#D8DEE9"
-let s:nord4_gui = "#C5D2E1"
+let s:nord4_gui = "#B6C1CD"
 let s:nord5_gui = "#E5E9F0"
 let s:nord6_gui = "#ECEFF4"
 let s:nord7_gui = "#8FBCBB"
-let s:nord8_gui = "#88C0D0"
-let s:nord9_gui = "#81A1C1"
+let s:nord8_gui = "#61A7A3"
+let s:nord9_gui = "#5E7EAE"
 let s:nord10_gui = "#5E81AC"
 let s:nord11_gui = "#BF616A"
 let s:nord12_gui = "#D08770"
 let s:nord13_gui = "#EBCB8B"
-let s:nord14_gui = "#A3BE8C"
-let s:nord15_gui = "#B48EAD"
+let s:nord14_gui = "#7D9F89"
+let s:nord15_gui = "#9D72B1"
 
 let s:nord1_term = "0"
 let s:nord3_term = "8"
@@ -142,8 +141,8 @@ call s:hi("LineNr", s:nord3_gui, "NONE", s:nord3_term, "NONE", "", "")
 call s:hi("MatchParen", s:nord8_gui, s:nord3_gui, s:nord8_term, s:nord3_term, "", "")
 call s:hi("NonText", s:nord2_gui, "", s:nord3_term, "", "", "")
 call s:hi("Normal", s:nord4_gui, s:nord0_gui, "NONE", "NONE", "", "")
-call s:hi("Pmenu", s:nord4_gui, s:nord2_gui, "NONE", s:nord1_term, "NONE", "")
-call s:hi("PmenuSbar", s:nord4_gui, s:nord2_gui, "NONE", s:nord1_term, "", "")
+call s:hi("Pmenu", s:nord4_gui, s:nord1_gui, "NONE", s:nord1_term, "NONE", "")
+call s:hi("PmenuSbar", s:nord4_gui, s:nord1_gui, "NONE", s:nord1_term, "", "")
 call s:hi("PmenuSel", s:nord8_gui, s:nord3_gui, s:nord8_term, s:nord3_term, "", "")
 call s:hi("PmenuThumb", s:nord8_gui, s:nord3_gui, "NONE", s:nord3_term, "", "")
 call s:hi("SpecialKey", s:nord3_gui, "", s:nord3_term, "", "", "")
@@ -266,7 +265,7 @@ call s:hi("Conditional", s:nord9_gui, "", s:nord9_term, "", "", "")
 call s:hi("Constant", s:nord4_gui, "", "NONE", "", "", "")
 call s:hi("Decorator", s:nord12_gui, "", s:nord12_term, "", "", "")
 call s:hi("Define", s:nord9_gui, "", s:nord9_term, "", "", "")
-call s:hi("Delimiter", s:nord6_gui, "", s:nord6_term, "", "", "")
+call s:hi("Delimiter", s:nord3_gui, "", s:nord3_term, "", "", "")
 call s:hi("Exception", s:nord9_gui, "", s:nord9_term, "", "", "")
 call s:hi("Float", s:nord15_gui, "", s:nord15_term, "", "", "")
 call s:hi("Function", s:nord8_gui, "", s:nord8_term, "", "", "")
@@ -546,7 +545,7 @@ hi! link yamlDocumentStart Keyword
 "+--- UI ---+
 " Telescope
 " > nvim-telescope/telescope.nvim
-call s:hi("TelescopeBorder", s:nord1_gui, "", s:nord1_term, "", "", "")
+call s:hi("TelescopeBorder", s:nord3_gui, "", s:nord1_term, "", "", "")
 
 " ALE
 " > w0rp/ale
@@ -578,7 +577,7 @@ if has('nvim')
     call s:hi("LspDiagnosticsUnderlineInformation" , s:nord8_gui, "", s:nord8_term, "", "undercurl", "")
     call s:hi("LspDiagnosticsUnderlineHint" , s:nord10_gui, "", s:nord10_term, "", "undercurl", "")
   endif
-  
+
   " Gitsigns
   " > lewis6991/gitsigns.nvim
   hi! link GitSignsCurrentLineBlame Comment
@@ -656,7 +655,7 @@ hi! link ClapProviderId Type
 call s:hi("IndentGuidesEven", "", s:nord1_gui, "", s:nord1_term, "", "")
 call s:hi("IndentGuidesOdd", "", s:nord2_gui, "", s:nord3_term, "", "")
 
-"indent-blankline.nvim 
+"indent-blankline.nvim
 " > lukas-reineke/indent-blankline.nvim
 "
 call s:hi("IndentBlanklineChar", s:nord1_gui, "", s:nord1_term, "", "", "")
@@ -722,7 +721,7 @@ hi! link pandocSimpleTableHeader pandocAtxHeader
 hi! link pandocStrong markdownBold
 hi! link pandocTableHeaderWord pandocAtxHeader
 hi! link pandocUListItemBullet Operator
-  
+
 if has('nvim')
   " tree-sitter
   " > nvim-treesitter/nvim-treesitter
@@ -739,6 +738,7 @@ if has('nvim')
   hi! link TSUnderline Underline
   hi! link TSVariable Variable
   hi! link TSVariableBuiltin Keyword
+  hi! link @tag.delimiter Delimiter
 endif
 
 " TypeScript
@@ -850,3 +850,4 @@ function! NordPalette() abort
   let ret["nord3_bright"] = s:nord3_gui_bright
   return ret
 endfunction
+

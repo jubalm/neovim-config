@@ -11,18 +11,13 @@ return {
 			modules = {},
 			sync_install = false,
 			ignore_install = {},
-
-			-- Add languages to be installed here that you want installed for treesitter
-			ensure_installed = { 'lua', 'javascript', 'typescript', 'tsx', 'yaml', 'css', 'bash', 'json' },
-
-			-- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
+			ensure_installed = { "css", "javascript", "typescript", "tsx", "json", "html", "bash", "lua" },
 			auto_install = true,
-
-			autotag = {
-				enable = true
+			autotag = { enable = true },
+			highlight = {
+				enable = true,
+				disable = { "yaml" }
 			},
-
-			highlight = { enable = true },
 			indent = { enable = true },
 			incremental_selection = {
 				enable = true,
@@ -32,6 +27,9 @@ return {
 					scope_incremental = false,
 					node_decremental = 'V',
 				},
+			},
+			playground = {
+				enable = true
 			},
 			textobjects = {
 				select = {

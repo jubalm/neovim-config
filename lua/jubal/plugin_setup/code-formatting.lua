@@ -53,46 +53,59 @@ return {
 				vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
 					vim.lsp.buf.format()
 				end, { desc = 'Format current buffer with LSP' })
+
+				nmap('<leader>fd', vim.lsp.buf.format, '[F]ormat [D]ocument')
 			end
 
 			-- Setup neovim lua configuration
 			require('neodev').setup()
 
 			-- nvim-cmp supports additional completion capabilities, so broadcast that to servers
-			local capabilities = vim.lsp.protocol.make_client_capabilities()
-			capabilities.textDocument.foldingRange = {
+			local defaultCapabilities = vim.lsp.protocol.make_client_capabilities()
+			defaultCapabilities.textDocument.foldingRange = {
 				dynamicRegistration = false,
 				lineFoldingOnly = true
 			}
 
-			capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+			local capabilities = require('cmp_nvim_lsp').default_capabilities(defaultCapabilities)
 
 			local lspconfig = require('lspconfig')
 			local mason_lspconfig = require('mason-lspconfig')
 
-			require 'lspconfig'.biome.setup {
-				root_dir = function(fname)
-					return lspconfig.util.find_package_json_ancestor(fname)
-						or lspconfig.util.find_node_modules_ancestor(fname)
-						or lspconfig.util.find_git_ancestor(fname)
-				end,
+			mason_lspconfig.setup {
+				ensure_installed = {}
 			}
 
-			mason_lspconfig.setup {
-				ensure_installed = {},
-				handlers = {
-					function(server_name)
-						lspconfig[server_name].setup {
-							capabilities = capabilities,
-							on_attach = on_attach,
-							root_dir = function(fname)
-								return lspconfig.util.find_package_json_ancestor(fname)
-									or lspconfig.util.find_node_modules_ancestor(fname)
-									or lspconfig.util.find_git_ancestor(fname)
-							end,
+			mason_lspconfig.setup_handlers {
+				function(server_name)
+					lspconfig[server_name].setup {
+						capabilities = capabilities,
+						on_attach = on_attach,
+					}
+				end,
+				["biome"] = function()
+					require 'lspconfig'.biome.setup {
+						root_dir = function(fname)
+							return lspconfig.util.find_package_json_ancestor(fname)
+								or lspconfig.util.find_node_modules_ancestor(fname)
+								or lspconfig.util.find_git_ancestor(fname)
+						end,
+					}
+				end,
+				['tsserver'] = function()
+					require 'lspconfig'.tsserver.setup {
+						capabilities = capabilities,
+						on_attach = on_attach,
+						settings = {
+							typescript = {
+								format = {
+									insertSpaceAfterConstructor = true,
+									insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces = true
+								}
+							}
 						}
-					end
-				}
+					}
+				end
 			}
 		end
 	},

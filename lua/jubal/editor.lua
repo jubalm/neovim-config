@@ -3,7 +3,8 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set theme
--- vim.cmd.colorscheme 'nord-macos'
+vim.o.termguicolors = true
+vim.cmd('colorscheme nord-macos')
 
 -- Set highlight on search
 vim.o.hlsearch = true
