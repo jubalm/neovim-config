@@ -6,6 +6,9 @@ vim.g.maplocalleader = ' '
 vim.o.termguicolors = true
 vim.cmd('colorscheme nord-macos')
 
+-- Show cursorline
+vim.o.cursorline = true
+
 -- Set highlight on search
 vim.o.hlsearch = true
 
