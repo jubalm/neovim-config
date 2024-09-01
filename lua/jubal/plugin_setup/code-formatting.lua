@@ -13,12 +13,6 @@ return {
 			local telescope_builtin = require 'telescope.builtin'
 			--  This function gets run when an LSP connects to a particular buffer.
 			local on_attach = function(_, bufnr)
-				-- NOTE: Remember that lua is a real programming language, and as such it is possible
-				-- to define small helper and utility functions so you don't have to repeat yourself
-				-- many times.
-				--
-				-- In this case, we create a function that lets us more easily define mappings specific
-				-- for LSP related items. It sets the mode, buffer and description for us each time.
 				local nmap = function(keys, func, desc)
 					if desc then
 						desc = 'LSP: ' .. desc
@@ -55,6 +49,27 @@ return {
 				end, { desc = 'Format current buffer with LSP' })
 
 				nmap('<leader>fd', vim.lsp.buf.format, '[F]ormat [D]ocument')
+
+				local group = vim.api.nvim_create_augroup("LSPDocumentHighlight", {})
+
+				-- Hightlight references under the cursor
+				local highlightOnHold = function()
+					vim.defer_fn(function()
+						vim.lsp.buf.document_highlight()
+					end
+					, 1500)
+				end
+
+				vim.api.nvim_create_autocmd({ "CursorHold" }, {
+					buffer = bufnr,
+					group = group,
+					callback = highlightOnHold
+				})
+				vim.api.nvim_create_autocmd({ "CursorMoved" }, {
+					buffer = bufnr,
+					group = group,
+					callback = vim.lsp.buf.clear_references
+				})
 			end
 
 			-- Setup neovim lua configuration
@@ -62,10 +77,8 @@ return {
 
 			-- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 			local defaultCapabilities = vim.lsp.protocol.make_client_capabilities()
-			defaultCapabilities.textDocument.foldingRange = {
-				dynamicRegistration = false,
-				lineFoldingOnly = true
-			}
+			defaultCapabilities.textDocument.foldingRange = { dynamicRegistration = false, lineFoldingOnly = true }
+			defaultCapabilities.textDocument.documentHighlight = true
 
 			local capabilities = require('cmp_nvim_lsp').default_capabilities(defaultCapabilities)
 
