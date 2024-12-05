@@ -10,7 +10,7 @@ local function setup_reference_highlight(bufnr, group)
 		clear_highlights()  -- Clear any existing highlights first
 		vim.defer_fn(function()
 			pcall(vim.lsp.buf.document_highlight)  -- Use pcall to handle any errors
-		end, 1000)
+		end, 800)
 	end
 
 	-- Set up autocommands with error handling
